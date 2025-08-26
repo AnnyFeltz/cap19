@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #2c3e50;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 50%, #e8f5e8 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -75,12 +75,13 @@
         }
 
         .intro-section {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            background: linear-gradient(135deg, #e1f5fe 0%, #f3e5f5 50%, #e8f5e8 100%);
             margin-bottom: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             position: relative;
+            border: 2px solid rgba(102, 126, 234, 0.2);
         }
 
         .intro-section::before {
@@ -653,6 +654,255 @@
                     </div>
 
                     <p>Isso elimina processamento desnecessário logo no início, economizando muito tempo.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="emoji">⚡</span>19.11 Técnicas Avançadas de Otimização
+                </div>
+                <div class="section-content">
+                    <h3>Particionamento de Tabelas</h3>
+                    <p>Dividir tabelas enormes em pedaços menores para acelerar consultas.</p>
+                    
+                    <div class="key-points">
+                        <h4>Tipos de particionamento:</h4>
+                        <ul>
+                            <li><strong>Por range:</strong> Ex: vendas de 2020, 2021, 2022 em partições separadas</li>
+                            <li><strong>Por hash:</strong> Distribui dados uniformemente entre partições</li>
+                            <li><strong>Por lista:</strong> Ex: região Norte, Sul, Sudeste em partições diferentes</li>
+                        </ul>
+                    </div>
+
+                    <div class="example">
+                        <strong>Vantagem do particionamento:</strong><br>
+                        Consulta "vendas de janeiro 2024" → banco vai direto na partição de 2024<br>
+                        Em vez de procurar em 10 anos de dados, procura só em 1 ano!
+                    </div>
+
+                    <h3>Paralelismo de Consultas</h3>
+                    <p>Dividir o trabalho entre múltiplos processadores para acelerar consultas pesadas.</p>
+
+                    <div class="highlight">
+                        <strong>Como funciona:</strong><br>
+                        Uma consulta que varrer 1 milhão de registros pode ser dividida entre 4 CPUs:<br>
+                        • CPU 1: registros 1-250.000<br>
+                        • CPU 2: registros 250.001-500.000<br>
+                        • CPU 3: registros 500.001-750.000<br>
+                        • CPU 4: registros 750.001-1.000.000
+                    </div>
+
+                    <div class="analogy">
+                        É como uma fábrica com linha de montagem - cada operário faz uma parte e o resultado final sai muito mais rápido.
+                    </div>
+
+                    <h3>Compressão de Dados</h3>
+                    <p>Reduzir o espaço ocupado pelos dados para acelerar a leitura.</p>
+
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Menos I/O:</strong> Menos dados para ler do disco</li>
+                            <li><strong>Mais dados em cache:</strong> Cabem mais informações na memória</li>
+                            <li><strong>Custo:</strong> Precisa descomprimir na hora de processar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="emoji">🔧</span>19.12 Monitoramento e Ajuste de Performance
+                </div>
+                <div class="section-content">
+                    <h3>Planos de Execução (EXPLAIN PLAN)</h3>
+                    <p>A ferramenta mais importante para entender como o banco está executando suas consultas.</p>
+
+                    <div class="example">
+                        <strong>Comando básico:</strong><br>
+                        EXPLAIN PLAN FOR SELECT * FROM funcionarios WHERE salario > 5000;<br>
+                        SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+                    </div>
+
+                    <div class="key-points">
+                        <h4>O que procurar no plano:</h4>
+                        <ul>
+                            <li><strong>Full Table Scan:</strong> Pode indicar falta de índice</li>
+                            <li><strong>Alto custo:</strong> Operações muito caras</li>
+                            <li><strong>Muitas linhas:</strong> Filtros ineficientes</li>
+                            <li><strong>Cartesian Join:</strong> Junções sem condição de ligação</li>
+                        </ul>
+                    </div>
+
+                    <h3>Estatísticas Atualizadas</h3>
+                    <p>O otimizador precisa de estatísticas precisas para tomar boas decisões.</p>
+
+                    <div class="highlight">
+                        <strong>Quando atualizar:</strong><br>
+                        • Após inserções/atualizações massivas<br>
+                        • Periodicicamente (ex: toda semana)<br>
+                        • Quando consultas ficam mais lentas sem razão aparente
+                    </div>
+
+                    <div class="example">
+                        <strong>Comando Oracle:</strong><br>
+                        EXEC DBMS_STATS.GATHER_TABLE_STATS('SCHEMA', 'TABELA');
+                    </div>
+
+                    <h3>Hints de Otimização</h3>
+                    <p>Formas de "sugerir" ao otimizador como executar a consulta (use com cuidado!).</p>
+
+                    <div class="key-points">
+                        <h4>Hints mais comuns:</h4>
+                        <ul>
+                            <li><strong>/*+ INDEX(tabela, indice) */:</strong> Força uso de índice específico</li>
+                            <li><strong>/*+ FULL(tabela) */:</strong> Força full table scan</li>
+                            <li><strong>/*+ USE_HASH(t1, t2) */:</strong> Força hash join</li>
+                            <li><strong>/*+ PARALLEL(tabela, 4) */:</strong> Força paralelismo com 4 processos</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>⚠️ Cuidado com hints:</strong><br>
+                        Eles podem "travar" o plano de execução e impedir que o otimizador se adapte a mudanças nos dados. Use apenas quando realmente necessário!
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="emoji">💎</span>19.13 Otimizações Específicas por Tipo de Consulta
+                </div>
+                <div class="section-content">
+                    <h3>Consultas Analíticas (OLAP)</h3>
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Window Functions:</strong> SUM() OVER, ROW_NUMBER(), etc.</li>
+                            <li><strong>Índices bitmap:</strong> Eficientes para colunas com poucos valores distintos</li>
+                            <li><strong>Cubos OLAP:</strong> Pré-agregações multidimensionais</li>
+                        </ul>
+                    </div>
+
+                    <h3>Consultas Transacionais (OLTP)</h3>
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Índices B-tree:</strong> Ótimos para buscas exatas e ranges</li>
+                            <li><strong>Chaves primárias:</strong> Sempre indexadas automaticamente</li>
+                            <li><strong>Consultas curtas:</strong> Preferir planos simples e rápidos</li>
+                        </ul>
+                    </div>
+
+                    <h3>Consultas com Texto (Full-Text Search)</h3>
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Índices de texto:</strong> Para buscas por palavras</li>
+                            <li><strong>Operadores LIKE:</strong> Evitar % no início (ex: '%palavra')</li>
+                            <li><strong>Funções de texto:</strong> UPPER(), LOWER() podem impedir uso de índices</li>
+                        </ul>
+                    </div>
+
+                    <div class="example">
+                        <strong>Comparação de performance:</strong><br>
+                        • Ruim: WHERE UPPER(nome) LIKE '%JOÃO%'<br>
+                        • Melhor: WHERE nome LIKE '%João%' (se dados estão padronizados)<br>
+                        • Ideal: Usar índice full-text específico
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="emoji">🌐</span>19.14 Otimização em Ambientes Distribuídos
+                </div>
+                <div class="section-content">
+                    <h3>Desafios Específicos</h3>
+                    <p>Em bancos distribuídos (dados espalhados por múltiplos servidores), surgem desafios únicos.</p>
+
+                    <div class="key-points">
+                        <h4>Problemas principais:</h4>
+                        <ul>
+                            <li><strong>Latência de rede:</strong> Transferir dados entre servidores é caro</li>
+                            <li><strong>Consistência:</strong> Garantir que todos os nós tenham dados atualizados</li>
+                            <li><strong>Falhas parciais:</strong> Um servidor pode falhar enquanto outros funcionam</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Estratégia: Data Locality</strong><br>
+                        Processar dados onde eles estão armazenados, em vez de movê-los pela rede.<br>
+                        "É mais barato mover o código para os dados do que os dados para o código."
+                    </div>
+
+                    <h3>Sharding Inteligente</h3>
+                    <p>Distribuir dados de forma que consultas frequentes fiquem no mesmo servidor.</p>
+
+                    <div class="example">
+                        <strong>Exemplo:</strong><br>
+                        E-commerce com usuários do Brasil e EUA:<br>
+                        • Servidor BR: dados de usuários brasileiros<br>
+                        • Servidor US: dados de usuários americanos<br>
+                        → Consultas por região ficam locais, sem tráfego internacional
+                    </div>
+
+                    <h3>MapReduce e Processamento Paralelo</h3>
+                    <div class="analogy">
+                        <strong>Analogia MapReduce:</strong><br>
+                        É como contar votos em eleição nacional:<br>
+                        • Map: cada cidade conta seus votos localmente<br>
+                        • Reduce: soma todos os resultados das cidades<br>
+                        → Muito mais rápido que enviar todas as urnas para Brasília
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="emoji">🚀</span>19.15 Tendências Futuras em Otimização
+                </div>
+                <div class="section-content">
+                    <h3>Machine Learning no Otimizador</h3>
+                    <p>IA para aprender padrões de consultas e melhorar estimativas automaticamente.</p>
+
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Aprendizado adaptativo:</strong> Corrige estimativas baseado em execuções reais</li>
+                            <li><strong>Padrões de uso:</strong> Identifica consultas similares e reutiliza planos</li>
+                            <li><strong>Previsão de carga:</strong> Antecipa picos de uso e prepara recursos</li>
+                        </ul>
+                    </div>
+
+                    <h3>Otimização para SSD e NVMe</h3>
+                    <p>Storages mais rápidos mudam o custo relativo das operações.</p>
+
+                    <div class="highlight">
+                        Com discos tradicionais, I/O era o gargalo principal.<br>
+                        Com SSDs ultra-rápidos, CPU e memória podem se tornar os limitadores.
+                    </div>
+
+                    <h3>Bancos Colunares vs Orientados a Linha</h3>
+                    <div class="key-points">
+                        <h4>Rowstore (tradicional):</h4>
+                        <ul>
+                            <li>✅ Ótimo para OLTP (inserções/atualizações frequentes)</li>
+                            <li>❌ Lento para consultas analíticas que usam poucas colunas</li>
+                        </ul>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>Columnstore (analítico):</h4>
+                        <ul>
+                            <li>✅ Excelente para relatórios (lê só as colunas necessárias)</li>
+                            <li>✅ Compressão muito eficiente</li>
+                            <li>❌ Lento para transações frequentes</li>
+                        </ul>
+                    </div>
+
+                    <div class="example">
+                        <strong>Exemplo prático:</strong><br>
+                        Relatório "total de vendas por mês em 2024":<br>
+                        • Rowstore: lê TODAS as colunas de TODAS as vendas<br>
+                        • Columnstore: lê apenas colunas 'data' e 'valor'<br>
+                        → Diferença pode ser 10x mais rápido!
+                    </div>
                 </div>
             </div>
 
