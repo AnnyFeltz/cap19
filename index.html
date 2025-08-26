@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 19 - Otimização de Consulta - Resumo Detalhado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .overview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+        
+        .section-19-1 { border-left-color: #e74c3c; }
+        .section-19-2 { border-left-color: #f39c12; }
+        .section-19-3 { border-left-color: #2ecc71; }
+        .section-19-4 { border-left-color: #3498db; }
+        .section-19-5 { border-left-color: #9b59b6; }
+        .section-19-6 { border-left-color: #1abc9c; }
+        .section-19-7 { border-left-color: #34495e; }
+        .section-19-8 { border-left-color: #e67e22; }
+        .section-19-9 { border-left-color: #8e44ad; }
+        .section-19-10 { border-left-color: #27ae60; }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .subsection {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .subsection h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .concept-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .important-note {
+            background: #ffe6e6;
+            border: 1px solid #ff7675;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .formula {
+            background: #e8f5e8;
+            border: 1px solid #00b894;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        
+        .algorithm-steps {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .algorithm-steps ol {
+            margin-left: 20px;
+        }
+        
+        .algorithm-steps li {
+            margin: 10px 0;
+            padding: 5px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-list {
+            list-style: none;
+        }
+        
+        .highlight-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .highlight-list li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Capítulo 19: Otimização de Consulta</h1>
+            <p class="subtitle">Resumo Detalhado e Aprofundado</p>
+        </div>
+
+        <div class="overview">
+            <h3>🎯 Visão Geral do Capítulo</h3>
+            <p><strong>Objetivo Principal:</strong> Selecionar a melhor estratégia possível para avaliação de consultas em SGBDs relacionais, transformando consultas em formas equivalentes mais eficientes.</p>
+            <p><strong>Conceito Fundamental:</strong> O termo "otimização" é tecnicamente incorreto, pois o plano escolhido nem sempre é o ótimo absoluto, mas sim o mais eficiente dentre as alternativas consideradas com as informações disponíveis.</p>
+        </div>
+
+        <!-- Seção 19.1 -->
+        <div class="section section-19-1">
+            <h2><span class="section-icon">1</span>19.1 Árvores de Consulta e Heurística</h2>
+            
+            <div class="subsection">
+                <h3>🌳 19.1.1 Notação para Árvores e Grafos de Consulta</h3>
+                
+                <div class="concept-box">
+                    <h4>Árvore de Consulta</h4>
+                    <p>Estrutura de dados que corresponde a uma expressão estendida da álgebra relacional:</p>
+                    <ul>
+                        <li><strong>Nós folha:</strong> Relações de entrada da consulta</li>
+                        <li><strong>Nós internos:</strong> Operações da álgebra relacional</li>
+                        <li><strong>Execução:</strong> Das folhas para a raiz</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-box">
+                    <h4>Grafo de Consulta</h4>
+                    <p>Representação mais neutra da consulta:</p>
+                    <ul>
+                        <li><strong>Círculos simples:</strong> Nós de relação</li>
+                        <li><strong>Círculos duplos:</strong> Valores constantes</li>
+                        <li><strong>Arestas:</strong> Condições de seleção e junção</li>
+                        <li><strong>Colchetes:</strong> Atributos a serem recuperados</li>
+                    </ul>
+                </div>
+                
+                <div class="important-note">
+                    <strong>Diferença Fundamental:</strong> Árvores de consulta mostram ordem específica de operações; grafos de consulta não indicam ordem, sendo mais neutros.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⚡ 19.1.2 Otimização Heurística das Árvores de Consulta</h3>
+                
+                <div class="example-box">
+                    <h4>Problema da Árvore Canônica</h4>
+                    <p>O analisador SQL gera inicialmente uma árvore "canônica" muito ineficiente que aplica PRODUTO CARTESIANO primeiro, depois condições WHERE, depois SELECT. Para relações com 100, 20 e 5.000 tuplas, isso geraria 10 milhões de tuplas intermediárias!</p>
+                </div>
+                
+                <div class="algorithm-steps">
+                    <h4>🔧 Algoritmo de Otimização Heurística (6 Etapas)</h4>
+                    <ol>
+                        <li><strong>Cascata de SELEÇÃO:</strong> Decomponha condições conjuntivas (AND) em operações SELEÇÃO individuais usando Regra 1</li>
+                        <li><strong>Movimento de SELEÇÃO para baixo:</strong> Use regras de comutatividade para mover seleções o mais próximo possível das folhas</li>
+                        <li><strong>Reorganização de folhas:</strong> Posicione relações com seleções mais restritivas primeiro, evitando produtos cartesianos</li>
+                        <li><strong>Substituição de PRODUTO CARTESIANO:</strong> Combine operações x + σ em operações JOIN (⋈)</li>
+                        <li><strong>Movimento de PROJEÇÃO para baixo:</strong> Mantenha apenas atributos necessários em cada operação</li>
+                        <li><strong>Agrupamento de operações:</strong> Identifique subárvores executáveis por algoritmos únicos</li>
+                    </ol>
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <h4>📋 Regras de Transformação Principais</h4>
+                        <ul class="highlight-list">
+                            <li>Cascata de σ: σc1∧c2∧...∧cn(R) = σc1(σc2(...(σcn(R))...))</li>
+                            <li>Comutatividade de σ: σc1(σc2(R)) = σc2(σc1(R))</li>
+                            <li>Cascata de π: πlist1(πlist2(...(πlistn(R))...)) = πlist1(R)</li>
+                            <li>Comutatividade de ⋈: R ⋈ S = S ⋈ R</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>🎯 Heurística Principal</h4>
+                        <ul class="highlight-list">
+                            <li>Aplicar operações que reduzem tamanho primeiro</li>
+                            <li>SELEÇÃO e PROJEÇÃO antes de JOIN</li>
+                            <li>Operações mais restritivas primeiro</li>
+                            <li>Evitar produtos cartesianos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção 19.2 -->
+        <div class="section section-19-2">
+            <h2><span class="section-icon">2</span>19.2 Planos de Execução de Consulta</h2>
+            
+            <div class="subsection">
+                <h3>🔄 19.2.1 Alternativas para Avaliação de Consulta</h3>
+                
+                <div class="two-column">
+                    <div class="concept-box">
+                        <h4>Avaliação Materializada</h4>
+                        <ul>
+                            <li>Resultado de cada operação armazenado como relação temporária</li>
+                            <li>Operação seguinte lê resultado materializado</li>
+                            <li>Maior uso de espaço em disco</li>
+                            <li>Menor uso de memória</li>
+                        </ul>
+                    </div>
+                    <div class="concept-box">
+                        <h4>Avaliação Pipeline</h4>
+                        <ul>
+                            <li>Tuplas passadas diretamente entre operações</li>
+                            <li>Economia de E/S de disco</li>
+                            <li>Maior uso de memória</li>
+                            <li>Preferível quando viável</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔗 19.2.2 Otimização de Subconsulta Aninhada</h3>
+                
+                <div class="example-box">
+                    <h4>Problema das Subconsultas Correlacionadas</h4>
+                    <p><strong>Estratégia ingênua:</strong> Avaliar subconsulta interna para cada tupla externa - muito ineficiente!</p>
+                    <p><strong>Solução:</strong> <em>Desaninhamento (Unnesting)</em> - converter em operação de junção sempre que possível.</p>
+                </div>
+                
+                <div class="algorithm-steps">
+                    <h4>Técnicas de Desaninhamento</h4>
+                    <ol>
+                        <li><strong>IN/ANY:</strong> Converter para junção interna quando apropriado</li>
+                        <li><strong>EXISTS:</strong> Usar semijunção (⋉) para evitar duplicatas</li>
+                        <li><strong>NOT IN:</strong> Usar antijunção (▷) para exclusão</li>
+                        <li><strong>Tabelas temporárias:</strong> Para subconsultas complexas</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔄 19.2.3 Transformação de Mesclagem de Visão</h3>
+                
+                <div class="concept-box">
+                    <h4>Mesclagem de Visão Simples</h4>
+                    <p>Visões com operações seleção-projeção-junção podem sempre ser mescladas ao bloco de consulta externo, oferecendo:</p>
+                    <ul>
+                        <li>Mais opções de ordem de junção</li>
+                        <li>Uso de índices nas relações base</li>
+                        <li>Eliminação de materializações intermediárias</li>
+                    </ul>
+                </div>
+                
+                <div class="important-note">
+                    <h4>Mesclagem com GROUP BY</h4>
+                    <p><strong>Decisão baseada em custo:</strong> Comparar custo da visão materializada vs. junção primeiro + agrupamento depois. A mesclagem pode ser benéfica quando as junções têm baixa seletividade.</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>💾 19.2.4 Visões Materializadas</h3>
+                
+                <div class="two-column">
+                    <div>
+                        <h4>Estratégias de Atualização</h4>
+                        <ul class="highlight-list">
+                            <li><strong>Imediata:</strong> Atualiza visão a cada mudança na base</li>
+                            <li><strong>Adiada:</strong> Recomputa apenas sob demanda</li>
+                            <li><strong>Periódica:</strong> Atualiza em intervalos regulares</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Manutenção Incremental</h4>
+                        <ul class="highlight-list">
+                            <li>Mais eficiente que recomputação total</li>
+                            <li>Baseia-se apenas nas mudanças</li>
+                            <li>Uso de triggers para automatização</li>
+                            <li>Contadores para projeções com DISTINCT</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção 19.3 -->
+        <div class="section section-19-3">
+            <h2><span class="section-icon">3</span>19.3 Seletividades e Otimização Baseada em Custo</h2>
+            
+            <div class="subsection">
+                <h3>💰 19.3.1 Componentes de Custo</h3>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Descrição</th>
+                            <th>Importância</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>E/S de Disco</strong></td>
+                            <td>Transferência de blocos entre disco e memória</td>
+                            <td>Primária para BDs grandes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Armazenamento</strong></td>
+                            <td>Custo de arquivos intermediários</td>
+                            <td>Secundária</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CPU</strong></td>
+                            <td>Operações em memória (busca, ordenação)</td>
+                            <td>Primária para BDs pequenos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memória</strong></td>
+                            <td>Número de buffers necessários</td>
+                            <td>Secundária</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Comunicação</strong></td>
+                            <td>Envio de consultas/resultados</td>
+                            <td>Primária para BDs distribuídos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="subsection">
+                <h3>📊 19.3.2 Informações do Catálogo</h3>
+                
+                <div class="two-column">
+                    <div>
+                        <h4>Estatísticas de Arquivo</h4>
+                        <ul class="highlight-list">
+                            <li><strong>r:</strong> Número de registros</li>
+                            <li><strong>R:</strong> Tamanho médio do registro</li>
+                            <li><strong>b:</strong> Número de blocos</li>
+                            <li><strong>bfr:</strong> Fator de bloco</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Estatísticas de Índice</h4>
+                        <ul class="highlight-list">
+                            <li><strong>x:</strong> Níveis do índice</li>
+                            <li><strong>NVD(A,R):</strong> Valores distintos</li>
+                            <li><strong>sl:</strong> Seletividade</li>
+                            <li><strong>s:</strong> Cardinalidade de seleção</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📈 19.3.3 Histogramas</h3>
+                
+                <div class="concept-box">
+                    <h4>Tipos de Histogramas</h4>
+                    <div class="two-column">
+                        <div>
+                            <h5>Equilargura</h5>
+                            <p>Intervalos de valores divididos em subfaixas iguais</p>
+                        </div>
+                        <div>
+                            <h5>Equialtura (Preferível)</h5>
+                            <p>Cada bucket com aproximadamente o mesmo número de registros</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="important-note">
+                    <strong>Vantagem dos Equialtura:</strong> Melhor distribuição de valores frequentes vs. raros, mantendo suposição de uniformidade dentro de cada bucket mais realista.
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção 19.4 -->
+        <div class="section section-19-4">
+            <h2><span class="section-icon">4</span>19.4 Funções de Custo para SELEÇÃO</h2>
+            
+            <div class="subsection">
+                <h3>🔍 Algoritmos de Seleção e Custos</h3>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Método</th>
+                            <th>Técnica</th>
+                            <th>Fórmula de Custo</th>
+                            <th>Quando Usar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>S1</strong></td>
+                            <td>Busca Linear</td>
+                            <td>C = b (ou b/2 para chave)</td>
+                            <td>Sem índice disponível</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S2</strong></td>
+                            <td>Busca Binária</td>
+                            <td>C = log₂b + ⌈s/bfr⌉ - 1</td>
+                            <td>Arquivo ordenado</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S3a</strong></td>
+                            <td>Índice Primário</td>
+                            <td>C = x + 1</td>
+                            <td>Condição igualdade em chave</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S3b</strong></td>
+                            <td>Hash</td>
+                            <td>C = 1 (estático) ou 2 (extensível)</td>
+                            <td>Acesso direto por chave</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S5</strong></td>
+                            <td>Índice Agrupamento</td>
+                            <td>C = x + ⌈s/bfr⌉</td>
+                            <td>Múltiplos registros próximos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S6</strong></td>
+                            <td>Índice Secundário</td>
+                            <td>C = x + 1 + s (não-chave)</td>
+                            <td>Atributos não-ordenados</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="subsection">
+                <h3>💡 19.4.1 Exemplo de Otimização</h3>
+                
+                <div class="example-box">
+                    <h4>Cenário: Arquivo FUNCIONARIO</h4>
+                    <ul>
+                        <li><strong>Registros:</strong> 10.000 tuplas em 2.000 blocos</li>
+                        <li><strong>Índice agrupamento em Salário:</strong> 3 níveis, seletividade média = 20</li>
+                        <li><strong>Índice secundário em CPF:</strong> 4 níveis (chave única)</li>
+                        <li><strong>Índice secundário em Número_departamento:</strong> 2 níveis, 125 valores distintos</li>
+                    </ul>
+                    
+                    <h4>Análise de Consultas:</h4>
+                    <div class="formula">
+                        OP1: σCpf='12345678966'(FUNCIONARIO)<br>
+                        → Escolha S6a: C = 4 + 1 = 5 vs. S1: C = 1000
+                    </div>
+                    
+                    <div class="formula">
+                        OP3: σNumero_departamento=5(FUNCIONARIO)<br>
+                        → Escolha S6a: C = 2 + 80 = 82 vs. S1: C = 2000
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
